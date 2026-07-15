@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard – FitForge</title>
+    <link rel="manifest" th:href="@{/manifest.json}">
+    <meta name="theme-color" content="#0A0A0F">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-inner">
+        <a href="/dashboard" class="logo">Fit<span>Forge</span></a>
+        <div class="nav-links">
+            <a href="/dashboard" class="active">Dashboard</a>
+            <a href="/training">Training</a>
+            <a href="/timer">Timer</a>
+            <a href="/profil">Profil</a>
+        </div>
+        <div class="nav-user">
+            <span class="user-email" sec:authentication="principal.username"></span>
+            <form th:action="@{/logout}" method="post" style="display:inline">
+                <button type="submit" class="btn-logout">Abmelden</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<main class="page">
+    <div class="container">
+
+        <div class="hero-banner">
+            <div class="hero-content">
+                <div class="hero-greeting">Guten Tag 👋</div>
+                <h1 class="hero-name" th:text="${user.name}">Athlet</h1>
+                <p class="hero-sub">Bereit für dein nächstes Training?</p>
+            </div>
+            <form th:action="@{/training/generieren}" method="post">
+                <input type="hidden" name="kiModus" value="true">
+                <button type="submit" class="btn btn-primary btn-large">
+                    <span>⚡</span> Training generieren
+                </button>
+            </form>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-grid">
+            <div class="stat-card stat-card--blue">
+                <div class="stat-icon">📋</div>
+                <div class="stat-label">Trainingspläne</div>
+                <div class="stat-value" th:text="${letztePlaene.size()}">0</div>
+            </div>
+            <div class="stat-card stat-card--green">
+                <div class="stat-icon">🏆</div>
+                <div class="stat-label">Fitness-Level</div>
+                <div class="stat-value stat-value--small"
+                     th:text="${user.fitnessLevel != null ? user.fitnessLevel.anzeigeName : '–'}">–</div>
+            </div>
+            <div class="stat-card stat-card--orange">
+                <div class="stat-icon">⚖️</div>
+                <div class="stat-label">Gewicht</div>
+                <div class="stat-value"
+                     th:text="${user.gewicht != null ? user.gewicht + ' kg' : '–'}">–</div>
+            </div>
+            <div class="stat-card stat-card--purple">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-label">Ziele</div>
+                <div class="stat-value stat-value--small"
+                     th:text="${user.ziele != null ? user.ziele.replace(',', ' · ') : 'Nicht gesetzt'}">–</div>
+            </div>
+        </div>
+
+        <!-- QUICK ACTIONS -->
+        <div class="quick-actions">
+            <a href="/training" class="quick-card">
+                <div class="quick-icon">🏋️</div>
+                <div class="quick-title">Training starten</div>
+                <div class="quick-sub">Plan auswählen oder generieren</div>
+                <div class="quick-arrow">→</div>
+            </a>
+            <a href="/timer" class="quick-card">
+                <div class="quick-icon">⏱️</div>
+                <div class="quick-title">Boxtimer</div>
+                <div class="quick-sub">Runden & Pausen einstellen</div>
+                <div class="quick-arrow">→</div>
+            </a>
+            <a href="/profil" class="quick-card">
+                <div class="quick-icon">👤</div>
+                <div class="quick-title">Profil bearbeiten</div>
+                <div class="quick-sub">Ziele und Daten anpassen</div>
+                <div class="quick-arrow">→</div>
+            </a>
+        </div>
+
+        <!-- LETZTE PLÄNE -->
+        <div class="section">
+            <div class="section-header">
+                <h2>Letzte Trainingspläne</h2>
+                <a href="/training" class="link-more">Alle anzeigen →</a>
+            </div>
+
+            <div th:if="${letztePlaene.empty}" class="empty-state">
+                <div class="empty-icon">💪</div>
+                <p>Noch kein Trainingsplan erstellt.</p>
+                <form th:action="@{/training/generieren}" method="post">
+                    <input type="hidden" name="kiModus" value="false">
+                    <button type="submit" class="btn btn-primary">Ersten Plan erstellen</button>
+                </form>
+            </div>
+
+            <div th:unless="${letztePlaene.empty}" class="plan-list">
+                <div th:each="plan : ${letztePlaene}" class="plan-card">
+                    <div class="plan-left">
+                        <div class="plan-cat-icon">🏋️</div>
+                        <div class="plan-info">
+                            <div class="plan-title" th:text="${plan.titel}">Plan</div>
+                            <div class="plan-meta">
+                                <span>⏱ <span th:text="${plan.dauer}">45 Min</span></span>
+                                <span>🔥 <span th:text="${plan.kalorien}">300 kcal</span></span>
+                                <span th:if="${plan.quelle.name() == 'KI'}" class="badge badge--ki">KI</span>
+                                <span th:unless="${plan.quelle.name() == 'KI'}" class="badge badge--manuell">Regelbasiert</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="plan-right">
+                        <span class="plan-count" th:text="${plan.uebungen.size() + ' Übungen'}">6 Übungen</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<!-- Mobile Nav -->
+<nav class="mobile-nav">
+    <a href="/dashboard" class="active"><span class="nav-icon">🏠</span>Home</a>
+    <a href="/training"><span class="nav-icon">🏋️</span>Training</a>
+    <a href="/timer"><span class="nav-icon">⏱️</span>Timer</a>
+    <a href="/profil"><span class="nav-icon">👤</span>Profil</a>
+</nav>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

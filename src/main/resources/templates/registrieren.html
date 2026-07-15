@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrieren – FitForge</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+</head>
+<body class="auth-body">
+
+<div class="auth-container">
+    <div class="auth-card auth-card--wide">
+        <div class="auth-logo">Fit<span>Forge</span></div>
+        <h1 class="auth-title">Konto erstellen</h1>
+        <p class="auth-subtitle">Erstelle dein persönliches Sportprofil</p>
+
+        <div th:if="${fehler}" class="alert alert-danger" th:text="${fehler}"></div>
+
+        <form th:action="@{/registrieren}" th:object="${user}" method="post" class="auth-form">
+
+            <!-- PERSÖNLICHE DATEN -->
+            <div class="form-section-title">Persönliche Daten</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name">Vollständiger Name</label>
+                    <input type="text" id="name" th:field="*{name}"
+                           placeholder="Max Mustermann" required>
+                    <span class="form-error" th:if="${#fields.hasErrors('name')}"
+                          th:errors="*{name}"></span>
+                </div>
+                <div class="form-group">
+                    <label for="email">E-Mail-Adresse</label>
+                    <input type="email" id="email" th:field="*{email}"
+                           placeholder="max@beispiel.de" required>
+                    <span class="form-error" th:if="${#fields.hasErrors('email')}"
+                          th:errors="*{email}"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Passwort</label>
+                <input type="password" id="password" th:field="*{password}"
+                       placeholder="Mindestens 8 Zeichen" required minlength="8">
+            </div>
+
+            <!-- KÖRPERDATEN -->
+            <div class="form-section-title">Körperdaten</div>
+            <div class="form-row form-row--3">
+                <div class="form-group">
+                    <label for="alter">Alter</label>
+					<input type="number" id="alter" th:field="*{alterJahre}"
+					       placeholder="25" min="10" max="100">
+                </div>
+                <div class="form-group">
+                    <label for="groesse">Größe (cm)</label>
+                    <input type="number" id="groesse" th:field="*{groesse}"
+                           placeholder="175" min="100" max="250">
+                </div>
+                <div class="form-group">
+                    <label for="gewicht">Gewicht (kg)</label>
+                    <input type="number" id="gewicht" th:field="*{gewicht}"
+                           placeholder="70" min="30" max="300">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="geschlecht">Geschlecht</label>
+                    <select id="geschlecht" th:field="*{geschlecht}">
+                        <option value="">Bitte wählen</option>
+                        <option value="MAENNLICH">Männlich</option>
+                        <option value="WEIBLICH">Weiblich</option>
+                        <option value="DIVERS">Divers</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="fitnessLevel">Fitness-Level</label>
+                    <select id="fitnessLevel" th:field="*{fitnessLevel}">
+                        <option th:each="level : ${fitnessLevels}"
+                                th:value="${level}"
+                                th:text="${level.anzeigeName}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="ausruestung">Verfügbare Ausrüstung</label>
+                <select id="ausruestung" th:field="*{ausruestung}">
+                    <option th:each="a : ${ausruestungen}"
+                            th:value="${a}"
+                            th:text="${a.anzeigeName}"></option>
+                </select>
+            </div>
+
+            <!-- TRAININGSZIELE -->
+            <div class="form-section-title">Trainingsziele (Mehrfachauswahl)</div>
+            <div class="goals-grid">
+                <label class="goal-chip">
+                    <input type="checkbox" name="ziele" value="Fett verbrennen">
+                    <span class="chip-icon">🔥</span>
+                    <span>Fett verbrennen</span>
+                </label>
+                <label class="goal-chip">
+                    <input type="checkbox" name="ziele" value="Muskeln aufbauen">
+                    <span class="chip-icon">💪</span>
+                    <span>Muskeln aufbauen</span>
+                </label>
+                <label class="goal-chip">
+                    <input type="checkbox" name="ziele" value="Kraft steigern">
+                    <span class="chip-icon">🏋️</span>
+                    <span>Kraft steigern</span>
+                </label>
+                <label class="goal-chip">
+                    <input type="checkbox" name="ziele" value="Ausdauer">
+                    <span class="chip-icon">❤️</span>
+                    <span>Ausdauer</span>
+                </label>
+                <label class="goal-chip">
+                    <input type="checkbox" name="ziele" value="Aufwärmen">
+                    <span class="chip-icon">☀️</span>
+                    <span>Aufwärmen</span>
+                </label>
+                <label class="goal-chip">
+                    <input type="checkbox" name="ziele" value="Dehnen">
+                    <span class="chip-icon">🧘</span>
+                    <span>Dehnen</span>
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full" style="margin-top:1.5rem">
+                Konto erstellen
+            </button>
+        </form>
+
+        <p class="auth-switch">
+            Schon registriert? <a th:href="@{/login}">Jetzt anmelden</a>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

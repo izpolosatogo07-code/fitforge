@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} + ' – FitForge'">FitForge</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav class="navbar" sec:authorize="isAuthenticated()">
+    <div class="nav-inner">
+        <a href="/dashboard" class="logo">Fit<span>Forge</span></a>
+        <div class="nav-links">
+            <a th:href="@{/dashboard}" th:classappend="${activePage == 'dashboard'} ? 'active'">Dashboard</a>
+            <a th:href="@{/training}"  th:classappend="${activePage == 'training'} ? 'active'">Training</a>
+            <a th:href="@{/timer}"     th:classappend="${activePage == 'timer'} ? 'active'">Timer</a>
+            <a th:href="@{/profil}"    th:classappend="${activePage == 'profil'} ? 'active'">Profil</a>
+        </div>
+        <div class="nav-user">
+            <span sec:authentication="principal.username" class="nav-email"></span>
+            <form th:action="@{/logout}" method="post" style="display:inline">
+                <button type="submit" class="btn-logout">Abmelden</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<!-- SEITENINHALT -->
+<main class="main-content" th:fragment="content">
+    <!-- Wird von jeder Seite überschrieben -->
+</main>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil – FitForge</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-inner">
+        <a href="/dashboard" class="logo">Fit<span>Forge</span></a>
+        <div class="nav-links">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/training">Training</a>
+            <a href="/timer">Timer</a>
+            <a href="/profil" class="active">Profil</a>
+        </div>
+        <div class="nav-user">
+            <span sec:authentication="principal.username"></span>
+            <form th:action="@{/logout}" method="post" style="display:inline">
+                <button type="submit" class="btn-logout">Abmelden</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<main class="page">
+    <div class="container container--narrow">
+
+        <div class="page-header">
+            <h1>Mein Profil</h1>
+            <p class="page-sub">Körperdaten und Trainingsziele bearbeiten</p>
+        </div>
+
+        <div th:if="${erfolg}" class="alert alert-success" th:text="${erfolg}"></div>
+        <div th:if="${fehler}"  class="alert alert-danger"  th:text="${fehler}"></div>
+
+        <form th:action="@{/profil}" th:object="${user}" method="post" class="profile-form">
+
+            <div class="form-card">
+                <div class="form-card-title">Persönliche Angaben</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" th:field="*{name}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>E-Mail</label>
+                        <input type="email" th:value="${user.email}" disabled class="input-disabled">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-card">
+                <div class="form-card-title">Körperdaten</div>
+                <div class="form-row form-row--3">
+                    <div class="form-group">
+                        <label>Alter</label>
+                        <input type="number" th:field="*{alterJahre}" min="10" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label>Größe (cm)</label>
+                        <input type="number" th:field="*{groesse}" min="100" max="250">
+                    </div>
+                    <div class="form-group">
+                        <label>Gewicht (kg)</label>
+                        <input type="number" th:field="*{gewicht}" min="30" max="300">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Geschlecht</label>
+                        <select th:field="*{geschlecht}">
+                            <option value="">Bitte wählen</option>
+                            <option value="MAENNLICH">Männlich</option>
+                            <option value="WEIBLICH">Weiblich</option>
+                            <option value="DIVERS">Divers</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Fitness-Level</label>
+                        <select th:field="*{fitnessLevel}">
+                            <option th:each="level : ${fitnessLevels}"
+                                    th:value="${level}"
+                                    th:text="${level.anzeigeName}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Verfügbare Ausrüstung</label>
+                    <select th:field="*{ausruestung}">
+                        <option th:each="a : ${ausruestungen}"
+                                th:value="${a}"
+                                th:text="${a.anzeigeName}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-card">
+                <div class="form-card-title">Trainingsziele</div>
+                <div class="goals-grid">
+                    <label class="goal-chip" th:each="ziel : ${ {'Fett verbrennen','Muskeln aufbauen','Kraft steigern','Ausdauer','Aufwärmen','Dehnen'} }">
+                        <input type="checkbox" name="ziele" th:value="${ziel}"
+                               th:checked="${aktuelleZiele.contains(ziel)}">
+                        <span th:text="${ziel}"></span>
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full">Profil speichern</button>
+        </form>
+
+    </div>
+</main>
+
+</body>
+</html>

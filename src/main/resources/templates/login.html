@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anmelden – FitForge</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+</head>
+<body class="auth-body">
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-logo">Fit<span>Forge</span></div>
+        <h1 class="auth-title">Willkommen zurück</h1>
+        <p class="auth-subtitle">Melde dich an und starte dein Training</p>
+
+        <!-- Erfolgsmeldung nach Registrierung -->
+        <div th:if="${param.abgemeldet}" class="alert alert-success">
+            Du wurdest erfolgreich abgemeldet.
+        </div>
+        <div th:if="${erfolg}" class="alert alert-success" th:text="${erfolg}"></div>
+
+        <!-- Fehlermeldung -->
+        <div th:if="${param.fehler}" class="alert alert-danger">
+            E-Mail oder Passwort falsch. Bitte erneut versuchen.
+        </div>
+
+        <form th:action="@{/login}" method="post" class="auth-form">
+            <div class="form-group">
+                <label for="email">E-Mail-Adresse</label>
+                <input type="email" id="email" name="email"
+                       placeholder="deine@email.de" required autocomplete="email">
+            </div>
+
+            <div class="form-group">
+                <label for="passwort">Passwort</label>
+                <input type="password" id="passwort" name="passwort"
+                       placeholder="••••••••" required autocomplete="current-password">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full">Anmelden</button>
+        </form>
+
+        <p class="auth-switch">
+            Noch kein Konto? <a th:href="@{/registrieren}">Jetzt registrieren</a>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

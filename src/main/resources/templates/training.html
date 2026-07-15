@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training – FitForge</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-inner">
+        <a href="/dashboard" class="logo">Fit<span>Forge</span></a>
+        <div class="nav-links">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/training" class="active">Training</a>
+            <a href="/timer">Timer</a>
+            <a href="/profil">Profil</a>
+        </div>
+        <div class="nav-user">
+            <span sec:authentication="principal.username"></span>
+            <form th:action="@{/logout}" method="post" style="display:inline">
+                <button type="submit" class="btn-logout">Abmelden</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<main class="page">
+    <div class="container">
+
+        <div class="page-header">
+            <div>
+                <h1>Trainingsplanung</h1>
+                <p class="page-sub">KI-generierte und regelbasierte Pläne</p>
+            </div>
+            <div class="btn-group">
+                <form th:action="@{/training/generieren}" method="post" style="display:inline">
+                    <input type="hidden" name="kiModus" value="false">
+                    <button type="submit" class="btn btn-secondary">⚡ Regelbasiert</button>
+                </form>
+                <form th:action="@{/training/generieren}" method="post" style="display:inline">
+                    <input type="hidden" name="kiModus" value="true">
+                    <button type="submit" class="btn btn-primary">🤖 Mit KI generieren</button>
+                </form>
+            </div>
+        </div>
+
+        <div th:if="${erfolg}" class="alert alert-success" th:text="${erfolg}"></div>
+        <div th:if="${warnung}" class="alert alert-warning" th:text="${warnung}"></div>
+
+        <div th:if="${plaene.empty}" class="empty-state">
+            <div class="empty-icon">🏋️</div>
+            <p>Noch keine Trainingspläne vorhanden.</p>
+        </div>
+
+        <div th:unless="${plaene.empty}" class="plans-container">
+            <div th:each="plan, iter : ${plaene}"
+                 th:id="'plan-card-' + ${plan.id}"
+                 th:classappend="${neuerPlanId != null && plan.id == neuerPlanId} ? 'plan-detail plan-detail--highlighted' : 'plan-detail'">
+
+                <div class="plan-detail-header">
+                    <div class="plan-header-left">
+                        <div class="plan-detail-title" th:text="${plan.titel}">Plan</div>
+                        <div class="plan-detail-meta">
+                            <span class="meta-item">⏱ <span th:text="${plan.dauer}">45 Min</span></span>
+                            <span class="meta-item">🔥 <span th:text="${plan.kalorien}">300 kcal</span></span>
+                            <span th:if="${plan.quelle.name() == 'KI'}" class="badge badge--ki">🤖 KI</span>
+                            <span th:unless="${plan.quelle.name() == 'KI'}" class="badge badge--manuell">⚡ Regelbasiert</span>
+                            <span class="meta-date" th:text="${#temporals.format(plan.erstelltAm, 'dd.MM.yyyy')}"></span>
+                        </div>
+                    </div>
+                    <div class="plan-header-actions">
+                        <button class="btn btn-ghost"
+                                th:onclick="'togglePlan(' + ${iter.index} + ')'"
+                                th:id="'btn-' + ${iter.index}">
+                            Anzeigen ▼
+                        </button>
+                        <form th:action="@{'/training/loeschen/' + ${plan.id}}" method="post"
+                              onsubmit="return confirm('Plan wirklich löschen?')"
+                              style="display:inline">
+                            <button type="submit" class="btn btn-delete">🗑</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="uebungen-list" th:id="'plan-' + ${iter.index}" style="display:none">
+                    <div th:each="uebung : ${plan.uebungen}" class="uebung-row">
+                        <div class="uebung-num" th:text="${uebung.position}">1</div>
+                        <div class="uebung-info">
+                            <div class="uebung-name" th:text="${uebung.name}">Übung</div>
+                            <div class="uebung-tipp" th:text="${uebung.technikTipp}">Tipp</div>
+                        </div>
+                        <div class="uebung-saetze" th:text="${uebung.saetze}">3×12</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<nav class="mobile-nav">
+    <a href="/dashboard"><span class="nav-icon">🏠</span>Home</a>
+    <a href="/training" class="active"><span class="nav-icon">🏋️</span>Training</a>
+    <a href="/timer"><span class="nav-icon">⏱️</span>Timer</a>
+    <a href="/profil"><span class="nav-icon">👤</span>Profil</a>
+</nav>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitForge – Dein persönlicher Trainer</title>
+    <!-- PWA -->
+    <link rel="manifest" th:href="@{/manifest.json}">
+    <meta name="theme-color" content="#2D6BFF">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="FitForge">
+    <link rel="apple-touch-icon" th:href="@{/icons/icon-192.png}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+<div class="landing">
+    <div class="landing-inner">
+        <div class="landing-logo">Fit<span>Forge</span></div>
+        <h1>Dein persönlicher KI-Trainer</h1>
+        <p>Gib deine Körperdaten und Ziele ein — FitForge erstellt einen individuellen Trainingsplan für dich. Mit Boxen, Thaiboxen, Turnier, Ganteln, Bänder und mehr!</p>
+        <div class="landing-btns">
+            <a th:href="@{/registrieren}" class="btn btn-primary btn-large">🚀 Kostenlos starten</a>
+            <a th:href="@{/login}" class="btn btn-secondary btn-large">Anmelden</a>
+        </div>
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <div class="feature-title">KI-Trainingsplan</div>
+                <div class="feature-desc">105+ Übungen individuell kombiniert</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🥊</div>
+                <div class="feature-title">Kampfsport</div>
+                <div class="feature-desc">Boxen & Thaiboxen Techniken</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⏱️</div>
+                <div class="feature-title">Boxtimer</div>
+                <div class="feature-desc">Rundenbasiertes Training</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <div class="feature-title">App installieren</div>
+                <div class="feature-desc">Direkt auf dem Homescreen</div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

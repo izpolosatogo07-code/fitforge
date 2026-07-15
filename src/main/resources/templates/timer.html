@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boxtimer – FitForge</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-inner">
+        <a href="/dashboard" class="logo">Fit<span>Forge</span></a>
+        <div class="nav-links">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/training">Training</a>
+            <a href="/timer" class="active">Timer</a>
+            <a href="/profil">Profil</a>
+        </div>
+        <div class="nav-user">
+            <span sec:authentication="principal.username"></span>
+            <form th:action="@{/logout}" method="post" style="display:inline">
+                <button type="submit" class="btn-logout">Abmelden</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<main class="page">
+    <div class="container container--narrow">
+        <div class="page-header page-header--center">
+            <h1>🥊 Boxtimer</h1>
+            <p class="page-sub">Teile dein Training in Runden auf</p>
+        </div>
+
+        <div class="timer-settings">
+            <div class="timer-ctrl">
+                <div class="ctrl-label">Runden</div>
+                <div class="ctrl-row">
+                    <button class="ctrl-btn" onclick="timerAdj('rounds', -1)">−</button>
+                    <div class="ctrl-val" id="val-rounds">3</div>
+                    <button class="ctrl-btn" onclick="timerAdj('rounds', 1)">+</button>
+                </div>
+            </div>
+            <div class="timer-ctrl">
+                <div class="ctrl-label">Arbeit (Sek)</div>
+                <div class="ctrl-row">
+                    <button class="ctrl-btn" onclick="timerAdj('work', -15)">−</button>
+                    <div class="ctrl-val" id="val-work">60</div>
+                    <button class="ctrl-btn" onclick="timerAdj('work', 15)">+</button>
+                </div>
+            </div>
+            <div class="timer-ctrl">
+                <div class="ctrl-label">Pause (Sek)</div>
+                <div class="ctrl-row">
+                    <button class="ctrl-btn" onclick="timerAdj('rest', -5)">−</button>
+                    <div class="ctrl-val" id="val-rest">30</div>
+                    <button class="ctrl-btn" onclick="timerAdj('rest', 5)">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="timer-display">
+            <div class="timer-ring-wrap">
+                <svg viewBox="0 0 220 220" class="timer-svg">
+                    <circle cx="110" cy="110" r="98" class="ring-bg"/>
+                    <circle cx="110" cy="110" r="98" class="ring-prog" id="ring-prog"/>
+                </svg>
+                <div class="timer-inner">
+                    <div class="timer-time" id="timer-time">1:00</div>
+                    <div class="timer-phase" id="timer-phase">BEREIT</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="round-status">
+            <div class="round-count">
+                Runde <span id="cur-round">0</span> / <span id="tot-rounds">3</span>
+            </div>
+            <div class="round-dots" id="round-dots"></div>
+        </div>
+
+        <div class="timer-controls">
+            <button class="btn btn-secondary btn-large" onclick="timerReset()">🔄 Zurücksetzen</button>
+            <button class="btn btn-primary btn-large" id="start-btn" onclick="timerToggle()">▶ Start</button>
+        </div>
+    </div>
+</main>
+
+<nav class="mobile-nav">
+    <a href="/dashboard"><span class="nav-icon">🏠</span>Home</a>
+    <a href="/training"><span class="nav-icon">🏋️</span>Training</a>
+    <a href="/timer" class="active"><span class="nav-icon">⏱️</span>Timer</a>
+    <a href="/profil"><span class="nav-icon">👤</span>Profil</a>
+</nav>
+
+<script th:src="@{/js/timer.js}"></script>
+</body>
+</html>
